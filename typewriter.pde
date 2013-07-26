@@ -49,7 +49,6 @@ void keyPressed() {
   else
   {
     isMoving = true;
-    
     // If DELETE is pressed.
     if (keyCode==8)
     {
@@ -72,19 +71,6 @@ void keyPressed() {
   }
 }
 
-// Add typing sounds
-// Add paper grain
-// Add varying strenght of ink
-// Add move back for delete
-// Add next line animation
-// Dual motion animation (cos?)
-// Speed is function of font size
-// Vignetting
-
-// And ending
-// Background music (Pura suadade)
-// Copyright/music title displa // Clears background.y
-
 
 void drawText() {
   if (isMoving) {
@@ -105,4 +91,3 @@ void drawText() {
   line(0, 0, charwidth, 0);
   popMatrix();
 }
-
