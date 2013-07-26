@@ -1,0 +1,51 @@
+Typerwriter (a Processing sketch) Project Notes
+
+Features List
+=============
+MVP
+-
+
+Nice to Haves
+-
+
+Awesome Extras
+-
+
+Known Bugs
+==========
+
+
+Log
+===
+Wednesday (7.26.2013)
+---------
+- Implemented proof of concept for rendering text as you type
+- Implemented sideways animation
+- Sketched-out initial notes and ideas on paper
+
+Time spent: 40 mins
+
+Thursday
+--------
+- Check into git
+- Add Maxim
+- Refactor variables
+- Sketch-out ideas on paper
+- Plan features list, priority and schedule
+
+Time spent: 45 mins (at 12:35)
+
+
+Planned Tasks
+-------------
+- Add typing sounds
+- Add paper grain
+- Add varying strenght of ink
+- Add move back for delete
+- Add next line animation
+- Dual motion animation (cos?)
+- Speed is function of font size
+- Vignetting
+- And ending
+- Background music (Pura suadade)
+- Copyright/music title displa // Clears background.y
