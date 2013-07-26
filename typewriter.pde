@@ -34,6 +34,10 @@ void setup()
   spaceSound.setLooping(false);
   bellSound.setLooping(false);
   returnSound.setLooping(false);
+  keySound.volume(4);
+  spaceSound.volume(5);
+  bellSound.volume(1);
+  returnSound.volume(7);
 
   f = createFont("Courier", 32, true);
 
@@ -131,7 +135,7 @@ void drawText() {
         posX = posX + speed;
         if (posX >= lastX) {
           isMoving = false;
-          isForward = false;
+          isForward = true;
           lastX = posX;
         }
       }
