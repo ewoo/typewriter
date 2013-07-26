@@ -9,12 +9,20 @@ float lastX;
 float charwidth;
 float speed;
 
+Maxim maxim;
+AudioPlayer player;
+
 void setup()
 {
   // Setup draw area.
   size(600, 360);
   smooth();
   frameRate(60);
+
+  // Init Maxim (audio player).
+  maxim = new Maxim(this);
+  player = maxim.loadFile("keystrike.wav");
+  player.setLooping(false);
 
   f = createFont("Courier", 32, true);
 
@@ -49,9 +57,11 @@ void keyPressed() {
   else
   {
     isMoving = true;
+
     // If DELETE is pressed.
     if (keyCode==8)
     {
+      // Do not concat if delete was pressed.
       println("Deleting... Length:" + words.length());
 
       if (words.length() > 0)
@@ -62,7 +72,8 @@ void keyPressed() {
     }
     else
     {
-      // Do not concat if delete was pressed.
+      player.cue(0);
+      player.play();
       words = words + String.valueOf(key);
     }
 
@@ -91,3 +102,4 @@ void drawText() {
   line(0, 0, charwidth, 0);
   popMatrix();
 }
+
