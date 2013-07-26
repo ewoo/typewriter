@@ -10,7 +10,10 @@ float charwidth;
 float speed;
 
 Maxim maxim;
-AudioPlayer player;
+AudioPlayer keySound;
+AudioPlayer spaceSound;
+AudioPlayer bellSound;
+AudioPlayer returnSound;
 
 void setup()
 {
@@ -19,10 +22,17 @@ void setup()
   smooth();
   frameRate(60);
 
-  // Init Maxim (audio player).
+  // Init Maxim (audio keySound).
   maxim = new Maxim(this);
-  player = maxim.loadFile("keystrike.wav");
-  player.setLooping(false);
+
+  keySound = maxim.loadFile("keystrike.wav");
+  spaceSound = maxim.loadFile("spacebar.wav");
+  bellSound = maxim.loadFile("bell.wav");
+  returnSound = maxim.loadFile("carriagereturn.wav");
+  keySound.setLooping(false);
+  spaceSound.setLooping(false);
+  bellSound.setLooping(false);
+  returnSound.setLooping(false);
 
   f = createFont("Courier", 32, true);
 
@@ -72,9 +82,27 @@ void keyPressed() {
     }
     else
     {
-      player.cue(0);
-      player.play();
+      if (key==' ')
+      {
+        spaceSound.cue(0);
+        spaceSound.play();
+      }
+      else if (keyCode==10)
+      {
+        returnSound.cue(0);
+        returnSound.play();
+      }
+      else
+      {
+        keySound.cue(0);
+        keySound.play();
+      }
       words = words + String.valueOf(key);
+      if (words.length() == 20)
+      {
+        bellSound.cue(0);
+        bellSound.play();
+      }
     }
 
     // Console out.
@@ -102,4 +130,5 @@ void drawText() {
   line(0, 0, charwidth, 0);
   popMatrix();
 }
+
 
