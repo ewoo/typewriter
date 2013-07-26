@@ -1,43 +1,65 @@
 Round round;
+
 PFont f;
 String words;
+
 boolean isMoving; 
-int x;
-int lastx;
+float posX;
+float lastX;
+float charwidth;
+float speed;
 
 void setup()
 {
+  // Setup draw area.
   size(600, 360);
-  f = createFont("Courier", 32, true);
   smooth();
   frameRate(60);
+
+  f = createFont("Courier", 32, true);
+
+  // posX is horizontal position of the text;
+  posX = width/2;
+
+  // posX is the approximate width of each letter. Thus, the distance to move.
+  charwidth = 14;
+  speed = 2.2;
+  lastX = posX;
   isMoving = false;
-  x = width/2;
-  lastx = x;
+
   words = "";
+
   round = new Round(100, 100);
 }
 
 void draw()
 {
-  background(255);
+  background(255); // Clears background.
   round.display();
-  displayInfo();
+
+  drawText();
 }
 
 void keyPressed() {
   if (isMoving)
   {
     // Accept no input;
+    // Play stuck sound.
   }
   else
   {
     isMoving = true;
+    
+    // If DELETE is pressed.
     if (keyCode==8)
     {
       println("Deleting... Length:" + words.length());
+
       if (words.length() > 0)
+      {
+        // Remove last letter.
         words = words.substring(0, words.length() - 1);
+      }
     }
     else
     {
@@ -61,24 +83,26 @@ void keyPressed() {
 
 // And ending
 // Background music (Pura suadade)
+// Copyright/music title displa // Clears background.y
 
-// Copyright/music title display
 
-void displayInfo() {
+void drawText() {
   if (isMoving) {
-    x = x - 3;
-    if(lastx - x >= 14) {
+    // Shift the words left.
+    posX = posX - speed;
+    if (lastX - posX >= charwidth) {
       isMoving = false;
-      lastx = x;
+      lastX = posX;
     }
   }
   pushMatrix();
-  translate(x, height/3);
+  translate(posX, height/3);
   textFont(f);
   textAlign(LEFT);
   fill(0);
   textSize(24);
   text(words, 0, 0);
+  line(0, 0, charwidth, 0);
   popMatrix();
 }
 
