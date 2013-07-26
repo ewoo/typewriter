@@ -3,7 +3,8 @@ Round round;
 PFont f;
 String words;
 
-boolean isMoving; 
+boolean isMoving;
+boolean isForward;
 float posX;
 float lastX;
 float charwidth;
@@ -44,6 +45,7 @@ void setup()
   speed = 2.2;
   lastX = posX;
   isMoving = false;
+  isForward = true;
 
   words = "";
 
@@ -72,7 +74,10 @@ void keyPressed() {
     if (keyCode==8)
     {
       // Do not concat if delete was pressed.
-      println("Deleting... Length:" + words.length());
+      // Reverse animation.
+      isForward = false;
+      spaceSound.cue(0);
+      spaceSound.play();
 
       if (words.length() > 0)
       {
@@ -113,22 +118,33 @@ void keyPressed() {
 
 void drawText() {
   if (isMoving) {
-    // Shift the words left.
-    posX = posX - speed;
-    if (lastX - posX >= charwidth) {
-      isMoving = false;
-      lastX = posX;
+    if (isForward) {
+      // Shift the words left.
+      posX = posX - speed;
+      if (lastX - posX >= charwidth) {
+        isMoving = false;
+        lastX = posX;
+      }
     }
+      else {
+        // Shift the words left.
+        posX = posX + speed;
+        if (posX >= lastX) {
+          isMoving = false;
+          isForward = false;
+          lastX = posX;
+        }
+      }
+    }
+    pushMatrix();
+    translate(posX, height/3);
+    textFont(f);
+    textAlign(LEFT);
+    fill(0);
+    textSize(24);
+    text(words, 0, 0);
+    line(0, 0, charwidth, 0);
+    popMatrix();
   }
-  pushMatrix();
-  translate(posX, height/3);
-  textFont(f);
-  textAlign(LEFT);
-  fill(0);
-  textSize(24);
-  text(words, 0, 0);
-  line(0, 0, charwidth, 0);
-  popMatrix();
-}
 
 
