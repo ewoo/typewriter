@@ -39,8 +39,9 @@ void setup()
   bellSound.volume(1);
   returnSound.volume(7);
 
-  f = createFont("Courier", 32, true);
-
+  //f = createFont("Courier", 32, true);
+  f = loadFont("OlivettiType2-32.vlw");
+  
   // posX is horizontal position of the text;
   posX = width/2;
 
