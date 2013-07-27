@@ -7,8 +7,10 @@ boolean isMoving;
 boolean isForward;
 float posX;
 float lastX;
-float charwidth;
-float speed;
+float charwidth = 26;
+float speed = 3;
+
+int bellLength = 20;
 
 Maxim maxim;
 AudioPlayer keySound;
@@ -19,7 +21,7 @@ AudioPlayer returnSound;
 void setup()
 {
   // Setup draw area.
-  size(600, 360);
+  size(640, 360);
   smooth();
   frameRate(60);
 
@@ -40,26 +42,23 @@ void setup()
   returnSound.volume(7);
 
   //f = createFont("Courier", 32, true);
-  f = loadFont("OlivettiType2-32.vlw");
-  
-  // posX is horizontal position of the text;
-  posX = width/2;
+  f = loadFont("OlivettiType2-48.vlw");
 
-  // posX is the approximate width of each letter. Thus, the distance to move.
-  charwidth = 14;
-  speed = 2.2;
-  lastX = posX;
+  round = new Round(100, 100);
+
+  // Init variables.
   isMoving = false;
   isForward = true;
 
+  posX = width/2; // posX is horizontal position of the text;
+  // posX is the approximate width of each letter. Thus, the distance to move.
+  lastX = posX;
   words = "";
-
-  round = new Round(100, 100);
 }
 
 void draw()
 {
-  background(255); // Clears background.
+  background(224); // Clears background.
   round.display();
 
   drawText();
@@ -68,56 +67,73 @@ void draw()
 void keyPressed() {
   if (isMoving)
   {
-    // Accept no input;
+    // If animating, do not accept input;
     // Play stuck sound.
+    return;
   }
-  else
+
+  if (key==CODED) {
+    // Special keys pressed. Do nothing.
+    return;
+  }
+
+  if ((key==DELETE)||(key==BACKSPACE))
   {
-    isMoving = true;
-
-    // If DELETE is pressed.
-    if (keyCode==8)
+    if (words.length() > 0)
     {
-      // Do not concat if delete was pressed.
-      // Reverse animation.
-      isForward = false;
-      spaceSound.cue(0);
-      spaceSound.play();
+      // Remove last typed letter.
+      words = words.substring(0, words.length() - 1);
+      println("Word length: " + words.length());
 
-      if (words.length() > 0)
-      {
-        // Remove last letter.
-        words = words.substring(0, words.length() - 1);
-      }
+      // Animate.
+      isMoving = true;
+      isForward = false;
     }
     else
     {
-      if (key==' ')
-      {
-        spaceSound.cue(0);
-        spaceSound.play();
-      }
-      else if (keyCode==10)
-      {
-        returnSound.cue(0);
-        returnSound.play();
-      }
-      else
-      {
-        keySound.cue(0);
-        keySound.play();
-      }
-      words = words + String.valueOf(key);
-      if (words.length() == 20)
-      {
-        bellSound.cue(0);
-        bellSound.play();
-      }
+      println("Word length == 0");
+      isMoving = false;
     }
 
-    // Console out.
-    //println("key: " + String.valueOf(key) + " value: " + int(key) + " code: " + keyCode);
+    // Play back sound.
+    spaceSound.cue(0);
+    spaceSound.play();
+
+    return;
   }
+
+  if ((key==TAB)||(key==' '))
+  {
+    spaceSound.cue(0);
+    spaceSound.play();
+  }
+  else if ((key==ENTER)||(key==RETURN)) 
+  {
+    returnSound.cue(0);
+    returnSound.play();
+  }
+  else
+  {
+    keySound.cue(0);
+    keySound.play();
+  }
+
+  // Check if approaching right margin.
+  if (words.length() == bellLength)
+  {
+    bellSound.cue(0);
+    bellSound.play();
+  }
+
+  // Build text.
+  words = words + String.valueOf(key);
+
+  // Animate.
+  isMoving = true;
+  isForward = true;
+
+  // Console out.
+  // println("key: " + String.valueOf(key) + " value: " + int(key) + " code: " + keyCode);
 }
 
 
@@ -131,25 +147,39 @@ void drawText() {
         lastX = posX;
       }
     }
-      else {
-        // Shift the words left.
-        posX = posX + speed;
-        if (posX >= lastX) {
-          isMoving = false;
-          isForward = true;
-          lastX = posX;
-        }
+    else {
+      // Shift the words left.
+      posX = posX + speed;
+      if (posX >= lastX) {
+        isMoving = false;
+        isForward = true;
+        lastX = posX;
       }
     }
-    pushMatrix();
-    translate(posX, height/3);
-    textFont(f);
-    textAlign(LEFT);
-    fill(0);
-    textSize(24);
-    text(words, 0, 0);
-    line(0, 0, charwidth, 0);
-    popMatrix();
   }
+  pushMatrix();
+  translate(posX, height/3);
+  textFont(f);
+  textAlign(LEFT);
+  fill(0);
+  textSize(48);
+  text(words, 0, 0);
+  stroke(0, 0, 255);
+  line(0, 0, charwidth, 0);
+  popMatrix();
 
+  stroke(255, 51, 51);
+  line(width/2, 0, width/2, height);
+}
+
+void mousePressed()
+{
+  // Reset
+  background(224);
+  isMoving = false;
+  isForward = true;  
+  posX = width/2;
+  lastX = posX;
+  words = "";
+}
 
