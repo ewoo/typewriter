@@ -1,3 +1,11 @@
+//The MIT License (MIT)
+//Copyright (c) 2013 Wooyong Ee
+
+//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 PFont f;
 PImage paper;
 String words;
@@ -25,40 +33,18 @@ void setup()
   smooth();
   frameRate(60);
 
-  // Init Maxim (audio keySound).
-  maxim = new Maxim(this);
-
-  keySound = maxim.loadFile("keystrike.wav");
-  spaceSound = maxim.loadFile("spacebar.wav");
-  bellSound = maxim.loadFile("bell.wav");
-  returnSound = maxim.loadFile("carriagereturn.wav");
-  keySound.setLooping(false);
-  spaceSound.setLooping(false);
-  bellSound.setLooping(false);
-  returnSound.setLooping(false);
-  keySound.volume(4);
-  spaceSound.volume(5);
-  bellSound.volume(1);
-  returnSound.volume(7);
-
+  initSound();
+  
   //f = createFont("Courier", 32, true);
   f = loadFont("OlivettiType2-48.vlw");
   paper = loadImage("ivory.jpg");
 
-  // Init variables.
-  isMoving = false;
-  isForward = true;
-
-  posX = width/2; // posX is horizontal position of the text;
-  // posX is the approximate width of each letter. Thus, the distance to move.
-  lastX = posX;
-  words = "";
+  // Get ready to start from scratch!
+  reset();
 }
 
 void draw()
 {
-  background(gray); // Clears background.
-  
   drawText();
 }
 
@@ -118,7 +104,8 @@ void keyPressed() {
   }
   else
   {
-     return; 
+    // Key we don't care about. Do nothing.
+    return;
   }
 
   // Check if approaching right margin.
@@ -160,7 +147,7 @@ void drawText() {
       }
     }
   }
-  
+
   pushMatrix();
   translate(posX, height/3);
   image(paper, -100, -110);
@@ -179,12 +166,43 @@ void drawText() {
 
 void mousePressed()
 {
-  // Reset
+  reset();
+}
+
+void reset()
+{
   background(gray);
+
+  // Init variables.
   isMoving = false;
-  isForward = true;  
-  posX = width/2;
+  isForward = true;
+
+  posX = width/2; // posX is horizontal position of the text;
+  // posX is the approximate width of each letter. Thus, the distance to move.
   lastX = posX;
+
   words = "";
+}
+
+void initSound()
+{
+  // Init Maxim (audio keySound).
+  maxim = new Maxim(this);
+
+  keySound = maxim.loadFile("keystrike.wav");
+  spaceSound = maxim.loadFile("spacebar.wav");
+  bellSound = maxim.loadFile("bell.wav");
+  returnSound = maxim.loadFile("carriagereturn.wav");
+  
+  keySound.setLooping(false);
+  spaceSound.setLooping(false);
+  bellSound.setLooping(false);
+  returnSound.setLooping(false);
+  
+  // Tweak sound levels.
+  keySound.volume(4);
+  spaceSound.volume(5);
+  bellSound.volume(1);
+  returnSound.volume(7);
 }
 
