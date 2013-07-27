@@ -1,15 +1,15 @@
-Round round;
-
 PFont f;
+PImage paper;
 String words;
 
 boolean isMoving;
 boolean isForward;
 float posX;
 float lastX;
-float charwidth = 26;
+float charwidth = 24;
 float speed = 3;
 
+int gray = 96;
 int bellLength = 20;
 
 Maxim maxim;
@@ -43,8 +43,7 @@ void setup()
 
   //f = createFont("Courier", 32, true);
   f = loadFont("OlivettiType2-48.vlw");
-
-  round = new Round(100, 100);
+  paper = loadImage("ivory.jpg");
 
   // Init variables.
   isMoving = false;
@@ -58,9 +57,8 @@ void setup()
 
 void draw()
 {
-  background(224); // Clears background.
-  round.display();
-
+  background(gray); // Clears background.
+  
   drawText();
 }
 
@@ -112,10 +110,15 @@ void keyPressed() {
     returnSound.cue(0);
     returnSound.play();
   }
-  else
+  else if ((key >= '!' && key <= '~'))
   {
+    // Print only valid character. See ASCII chart.
     keySound.cue(0);
     keySound.play();
+  }
+  else
+  {
+     return; 
   }
 
   // Check if approaching right margin.
@@ -148,7 +151,7 @@ void drawText() {
       }
     }
     else {
-      // Shift the words left.
+      // Shift the words right.
       posX = posX + speed;
       if (posX >= lastX) {
         isMoving = false;
@@ -157,8 +160,10 @@ void drawText() {
       }
     }
   }
+  
   pushMatrix();
   translate(posX, height/3);
+  image(paper, -100, -110);
   textFont(f);
   textAlign(LEFT);
   fill(0);
@@ -175,7 +180,7 @@ void drawText() {
 void mousePressed()
 {
   // Reset
-  background(224);
+  background(gray);
   isMoving = false;
   isForward = true;  
   posX = width/2;
