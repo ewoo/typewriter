@@ -249,9 +249,10 @@ void drawDisplay()
     int y = 20;
     textFont(infoFont);
     textSize(10);
-    text("LineCharCount:" + lineCharCount, 10, y);
-    text("LineStart (x,y): (" + lineStartX + ", " + lineStartY + ")", 10, y + fsize);
-    text("Current (x,y): (" + currentX + ", " + currentY + ")", 10, y + fsize * 2);
+    text("Debug Info:", 10, y);
+    text("lineCharCount:" + lineCharCount, 10, y + fsize);
+    text("lineStart(x,y):(" + lineStartX + ", " + lineStartY + ")", 10, y + fsize * 2);
+    text("current(x,y):(" + currentX + ", " + currentY + ")", 10, y + fsize * 3);
   }
 }
 
@@ -304,7 +305,5 @@ void initSound()
   bellSound.volume(1);
   returnSound.volume(7);
 }
-
-
 
 
