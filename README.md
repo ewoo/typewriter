@@ -11,4 +11,6 @@ For me, this concept is a baseline, a starting point for additional possibilitie
 
 It's currently running on Java desktop only (unfortunately). I haven't had time to troubleshoot my Javascript port. The source code is available at Github here: https://github.com/ewoo/typewriter 
 
+I opted for a clean gray-scaled look to the piece--and purposely tried to downplay the skeuomorphism. However, I did need to keep the texture of the paper such that the animation of the page moving would be more apparent.
+
 Note that the image above shows the app running in debug mode.
