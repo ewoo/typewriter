@@ -46,6 +46,7 @@ void setup()
 void draw()
 {
   drawText();
+  drawDisplay();
 }
 
 void keyPressed() {
@@ -149,10 +150,11 @@ void drawText() {
   }
 
   pushMatrix();
+  background(gray);
   translate(posX, height/3);
-  image(paper, -100, -110);
+  image(paper, -100, -120, 820, 420);
   textFont(f);
-  textAlign(LEFT);
+  textAlign(LEFT, BASELINE);
   fill(0, 195);
   textSize(48);
   text(words, 0, 0);
@@ -162,6 +164,12 @@ void drawText() {
 
   stroke(255, 51, 51);
   line(width/2, 0, width/2, height);
+}
+
+void drawDisplay()
+{
+  textSize(32);
+  text(words.length(), 10, 20);
 }
 
 void mousePressed()
