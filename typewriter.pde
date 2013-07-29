@@ -7,10 +7,10 @@
 //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 PFont f, infoFont;
-PImage paper;
+PImage paper, lighting;
 String words;
 
-boolean debugMode = true;
+boolean debugMode = false;
 
 boolean isAnimatingKeyStrike;
 boolean isAnimatingCarriageReturn;
@@ -52,6 +52,7 @@ void setup()
   infoFont = createFont("Courier", 10, true);
   f = loadFont("OlivettiType2-48.vlw");
   paper = loadImage("white-stock.jpg");
+  // lighting = loadImage("spotlight.jpg");
 
   // Init const after viewport size is set.
   viewportY = height/2;
@@ -63,6 +64,7 @@ void setup()
 void draw()
 {
   drawPage();
+  // drawLighting();
   drawDisplay();
 }
 
@@ -194,6 +196,7 @@ void drawPage() {
   }
   else if (isAnimatingCarriageReturn)
   {
+    // Sequencial animation is a bit tricky...
     // Animate scroll-up first.
     if (currentY > lineStartY)
     {
@@ -244,6 +247,12 @@ void drawPage() {
     line(0, viewportY, width, viewportY);
   }
 }
+
+//void drawLighting()
+//{
+//  image(lighting, 0, 0);
+//  blend(lighting, 0, 0, 640, 280, 0, 0, 640, 280, OVERLAY);
+//}
 
 void drawDisplay()
 {

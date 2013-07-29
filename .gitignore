@@ -1,7 +1,7 @@
 *.class
 *.txt
-#.sublime-project
-#.sublime-workspace
+*.sublime-project
+*.sublime-workspace
 .DS_Store
 
 misc/
