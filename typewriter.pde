@@ -6,7 +6,7 @@
 
 //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-PFont f;
+PFont f, infoFont;
 PImage paper;
 String words;
 
@@ -19,7 +19,8 @@ boolean isForward;
 float currentX, currentY;
 float lineStartX, lineStartY;
 float lastX;
-float charwidth = 24;
+int charwidth = 24;
+int lineHeight = 48;
 float typeSpeed = 3;
 float scrollUpSpeed = 4;
 float returnSpeed = 0.18;
@@ -30,6 +31,7 @@ int lineLength = 25;
 int bellLength = lineLength - 5;
 int lineCharCount = 0;
 int lineCount = 1;
+int lineCountLimit = 8;
 
 Maxim maxim;
 AudioPlayer keySound;
@@ -46,7 +48,7 @@ void setup()
 
   initSound();
 
-  //f = createFont("Courier", 32, true);
+  infoFont = createFont("Courier", 10, true);
   f = loadFont("OlivettiType2-48.vlw");
   paper = loadImage("ivory.jpg");
 
@@ -75,21 +77,30 @@ void keyPressed() {
 
   if ((key==ENTER)||(key==RETURN)) 
   {
+    if (lineCount == lineCountLimit)
+    {
+      // No more typing. Do nothing.
+      spaceSound.cue(0);
+      spaceSound.play();
+      return;
+    }
+
     returnSound.cue(0);
     returnSound.play();
 
     words = words + String.valueOf(key);
     lineCount++;
-    lineCharCount =0;
+    lineCharCount = 0;
 
     // Animate carriage return.
     isAnimatingCarriageReturn = true;
   }
 
-  if (words.length() == lineLength)
+  if (lineCharCount == lineLength)
   {
-    // Play stuck sound. Do nothing.
-
+    // Play stuck sound. Do nothing--until next line.
+    spaceSound.cue(0);
+    spaceSound.play();
     return;
   }
 
@@ -138,7 +149,7 @@ void keyPressed() {
   }
 
   // Check if approaching right margin.
-  if (words.length() == bellLength)
+  if (lineCharCount == bellLength)
   {
     bellSound.cue(0);
     bellSound.play();
@@ -202,19 +213,18 @@ void drawPage() {
     else
     {
       // Save lineStartX & Y
-      isAnimatingCarriageReturn = false;
       currentX = width/2;
       lastX = currentX;
       lineStartX = currentX;
-      
-      //lineStartY = currentY;
+      lineStartY -= lineHeight;
+      isAnimatingCarriageReturn = false;
     }
   }
 
   pushMatrix();
   background(gray);
   translate(currentX, currentY);
-  image(paper, -100, -120, 820, 420);
+  image(paper, -100, -120, 820, 540);
   textFont(f);
   textAlign(LEFT, BASELINE);
   fill(0, 195);
@@ -227,6 +237,7 @@ void drawPage() {
   {
     stroke(255, 51, 51);
     line(width/2, 0, width/2, height);
+    line(0, height/3, width, height/3);
   }
 }
 
@@ -234,16 +245,22 @@ void drawDisplay()
 {
   if (debugMode)
   {
-    textSize(32);
-    text(lineCharCount, 10, 20);
-    text("lineStart:" + lineStartX + ", " + lineStartY, 10, 50);
-    text("current:" + currentX + ", " + currentY, 10, 80);
+    int fsize = 10;
+    int y = 20;
+    textFont(infoFont);
+    textSize(10);
+    text("LineCharCount:" + lineCharCount, 10, y);
+    text("LineStart (x,y): (" + lineStartX + ", " + lineStartY + ")", 10, y + fsize);
+    text("Current (x,y): (" + currentX + ", " + currentY + ")", 10, y + fsize * 2);
   }
 }
 
 void mousePressed()
 {
-  reset();
+  if (debugMode)
+  {
+    reset();
+  }
 }
 
 void reset()
@@ -255,10 +272,9 @@ void reset()
   isForward = true;
 
   currentY = height/3;
-  lineStartY = currentY;
-  
-  currentX = width/2; // currentX is horizontal position of the text;
-  // currentX is the approximate width of each letter. Thus, the distance to move.
+  lineStartY = currentY - lineHeight;
+
+  currentX = width/2; 
   lastX = currentX;
   lineStartX = lastX;
 
@@ -288,7 +304,6 @@ void initSound()
   bellSound.volume(1);
   returnSound.volume(7);
 }
-
 
 
 
