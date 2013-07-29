@@ -34,7 +34,7 @@ void setup()
   frameRate(60);
 
   initSound();
-  
+
   //f = createFont("Courier", 32, true);
   f = loadFont("OlivettiType2-48.vlw");
   paper = loadImage("ivory.jpg");
@@ -153,7 +153,7 @@ void drawText() {
   image(paper, -100, -110);
   textFont(f);
   textAlign(LEFT);
-  fill(0);
+  fill(0, 195);
   textSize(48);
   text(words, 0, 0);
   stroke(0, 0, 255);
@@ -193,12 +193,12 @@ void initSound()
   spaceSound = maxim.loadFile("spacebar.wav");
   bellSound = maxim.loadFile("bell.wav");
   returnSound = maxim.loadFile("carriagereturn.wav");
-  
+
   keySound.setLooping(false);
   spaceSound.setLooping(false);
   bellSound.setLooping(false);
   returnSound.setLooping(false);
-  
+
   // Tweak sound levels.
   keySound.volume(4);
   spaceSound.volume(5);
