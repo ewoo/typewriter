@@ -16,18 +16,19 @@ boolean isAnimatingKeyStrike;
 boolean isAnimatingCarriageReturn;
 boolean isForward;
 
+int viewportY;
 float currentX, currentY;
 float lineStartX, lineStartY;
 float lastX;
 int charwidth = 24;
 int lineHeight = 48;
 float typeSpeed = 3;
-float scrollUpSpeed = 4;
-float returnSpeed = 0.18;
-float easing = 0.5;
+float scrollUpSpeed = 3;
+float returnSpeed = 0.08;
+float easing = 0.08;
 
 int gray = 96;
-int lineLength = 25;
+int lineLength = 26;
 int bellLength = lineLength - 5;
 int lineCharCount = 0;
 int lineCount = 1;
@@ -42,7 +43,7 @@ AudioPlayer returnSound;
 void setup()
 {
   // Setup draw area.
-  size(640, 360);
+  size(640, 280);
   smooth();
   frameRate(60);
 
@@ -51,6 +52,9 @@ void setup()
   infoFont = createFont("Courier", 10, true);
   f = loadFont("OlivettiType2-48.vlw");
   paper = loadImage("white-stock.jpg");
+
+  // Init const after viewport size is set.
+  viewportY = height/2;
 
   // Get ready to start from scratch!
   reset();
@@ -237,7 +241,7 @@ void drawPage() {
   {
     stroke(255, 51, 51);
     line(width/2, 0, width/2, height);
-    line(0, height/3, width, height/3);
+    line(0, viewportY, width, viewportY);
   }
 }
 
@@ -272,7 +276,7 @@ void reset()
   isAnimatingKeyStrike = false;
   isForward = true;
 
-  currentY = height/3;
+  currentY = viewportY;
   lineStartY = currentY - lineHeight;
 
   currentX = width/2; 
@@ -305,5 +309,4 @@ void initSound()
   bellSound.volume(1);
   returnSound.volume(7);
 }
-
 
