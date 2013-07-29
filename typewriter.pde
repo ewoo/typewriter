@@ -50,7 +50,7 @@ void setup()
 
   infoFont = createFont("Courier", 10, true);
   f = loadFont("OlivettiType2-48.vlw");
-  paper = loadImage("ivory.jpg");
+  paper = loadImage("white-stock.jpg");
 
   // Get ready to start from scratch!
   reset();
