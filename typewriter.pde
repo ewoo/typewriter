@@ -10,15 +10,26 @@ PFont f;
 PImage paper;
 String words;
 
-boolean isMoving;
+boolean debugMode = true;
+
+boolean isAnimatingKeyStrike;
+boolean isAnimatingCarriageReturn;
 boolean isForward;
-float posX;
+
+float currentX, currentY;
+float lineStartX, lineStartY;
 float lastX;
 float charwidth = 24;
-float speed = 3;
+float typeSpeed = 3;
+float scrollUpSpeed = 4;
+float returnSpeed = 0.18;
+float easing = 0.5;
 
 int gray = 96;
-int bellLength = 20;
+int lineLength = 25;
+int bellLength = lineLength - 5;
+int lineCharCount = 0;
+int lineCount = 1;
 
 Maxim maxim;
 AudioPlayer keySound;
@@ -45,12 +56,12 @@ void setup()
 
 void draw()
 {
-  drawText();
+  drawPage();
   drawDisplay();
 }
 
 void keyPressed() {
-  if (isMoving)
+  if (isAnimatingKeyStrike || isAnimatingCarriageReturn)
   {
     // If animating, do not accept input;
     // Play stuck sound.
@@ -62,22 +73,44 @@ void keyPressed() {
     return;
   }
 
+  if ((key==ENTER)||(key==RETURN)) 
+  {
+    returnSound.cue(0);
+    returnSound.play();
+
+    words = words + String.valueOf(key);
+    lineCount++;
+    lineCharCount =0;
+
+    // Animate carriage return.
+    isAnimatingCarriageReturn = true;
+  }
+
+  if (words.length() == lineLength)
+  {
+    // Play stuck sound. Do nothing.
+
+    return;
+  }
+
   if ((key==DELETE)||(key==BACKSPACE))
   {
     if (words.length() > 0)
     {
       // Remove last typed letter.
       words = words.substring(0, words.length() - 1);
+      lineCharCount--;
       println("Word length: " + words.length());
 
       // Animate.
-      isMoving = true;
+      isAnimatingKeyStrike = true;
       isForward = false;
     }
     else
     {
+      // If no words type, don't keep going back.
       println("Word length == 0");
-      isMoving = false;
+      isAnimatingKeyStrike = false;
     }
 
     // Play back sound.
@@ -91,11 +124,6 @@ void keyPressed() {
   {
     spaceSound.cue(0);
     spaceSound.play();
-  }
-  else if ((key==ENTER)||(key==RETURN)) 
-  {
-    returnSound.cue(0);
-    returnSound.play();
   }
   else if ((key >= '!' && key <= '~'))
   {
@@ -118,9 +146,10 @@ void keyPressed() {
 
   // Build text.
   words = words + String.valueOf(key);
+  lineCharCount++;
 
   // Animate.
-  isMoving = true;
+  isAnimatingKeyStrike = true;
   isForward = true;
 
   // Console out.
@@ -128,30 +157,63 @@ void keyPressed() {
 }
 
 
-void drawText() {
-  if (isMoving) {
+void drawPage() {
+  if (isAnimatingKeyStrike) {
     if (isForward) {
       // Shift the words left.
-      posX = posX - speed;
-      if (lastX - posX >= charwidth) {
-        isMoving = false;
-        lastX = posX;
+      currentX -= typeSpeed;
+      if (lastX - currentX >= charwidth) {
+        isAnimatingKeyStrike = false;
+        lastX = currentX;
       }
     }
     else {
       // Shift the words right.
-      posX = posX + speed;
-      if (posX >= lastX) {
-        isMoving = false;
+      currentX += typeSpeed;
+      if (currentX >= lastX) {
+        isAnimatingKeyStrike = false;
         isForward = true;
-        lastX = posX;
+        lastX = currentX;
       }
+    }
+  }
+  else if (isAnimatingCarriageReturn)
+  {
+    // Animate scroll-up first.
+    if (currentY > lineStartY)
+    {
+      currentY -= scrollUpSpeed;
+    }
+    // Then animate return swipe.
+    else if ( currentX < lineStartX)
+    {
+      // Add easing.
+      float dx = lineStartX - currentX;
+      if (abs(dx) > 1)
+      {
+        currentX += dx * easing;
+      }
+      else
+      {
+        currentX += returnSpeed;
+      }
+    }
+    // Carriage return animation done.
+    else
+    {
+      // Save lineStartX & Y
+      isAnimatingCarriageReturn = false;
+      currentX = width/2;
+      lastX = currentX;
+      lineStartX = currentX;
+      
+      //lineStartY = currentY;
     }
   }
 
   pushMatrix();
   background(gray);
-  translate(posX, height/3);
+  translate(currentX, currentY);
   image(paper, -100, -120, 820, 420);
   textFont(f);
   textAlign(LEFT, BASELINE);
@@ -159,17 +221,24 @@ void drawText() {
   textSize(48);
   text(words, 0, 0);
   stroke(0, 0, 255);
-  line(0, 0, charwidth, 0);
   popMatrix();
 
-  stroke(255, 51, 51);
-  line(width/2, 0, width/2, height);
+  if (debugMode)
+  {
+    stroke(255, 51, 51);
+    line(width/2, 0, width/2, height);
+  }
 }
 
 void drawDisplay()
 {
-  textSize(32);
-  text(words.length(), 10, 20);
+  if (debugMode)
+  {
+    textSize(32);
+    text(lineCharCount, 10, 20);
+    text("lineStart:" + lineStartX + ", " + lineStartY, 10, 50);
+    text("current:" + currentX + ", " + currentY, 10, 80);
+  }
 }
 
 void mousePressed()
@@ -182,14 +251,20 @@ void reset()
   background(gray);
 
   // Init variables.
-  isMoving = false;
+  isAnimatingKeyStrike = false;
   isForward = true;
 
-  posX = width/2; // posX is horizontal position of the text;
-  // posX is the approximate width of each letter. Thus, the distance to move.
-  lastX = posX;
+  currentY = height/3;
+  lineStartY = currentY;
+  
+  currentX = width/2; // currentX is horizontal position of the text;
+  // currentX is the approximate width of each letter. Thus, the distance to move.
+  lastX = currentX;
+  lineStartX = lastX;
 
   words = "";
+  lineCharCount = 0;
+  lineCount = 0;
 }
 
 void initSound()
@@ -213,4 +288,8 @@ void initSound()
   bellSound.volume(1);
   returnSound.volume(7);
 }
+
+
+
+
 
