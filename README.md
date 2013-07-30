@@ -1,7 +1,7 @@
 typewriter
 ==========
 
-A Processing sketch created for a coursera.org class. (See it in action [here](https://googledrive.com/host/0B1dY2ZQM39TcUl9LVUlEbXM3NGc/))
+A Processing sketch created for a coursera.org class. (See it in action [here](/typewriterjs/web-export/index.html))
 
 
 ![typewriter](/screenshot.jpg "Screenshot of typewriter")
