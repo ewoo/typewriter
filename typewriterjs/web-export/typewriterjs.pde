@@ -1,38 +1,38 @@
-//The MIT License (MIT)
-//Copyright (c) 2013 Wooyong Ee
+/* @pjs font="OlivettiType2.ttf"; */
+/* @pjs preload="white-stock.jpg"; */
 
-//Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-//The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+PFont f = null;
+PFont infoFont = null;
+PImage paper = null;
+PImage lighting = null;
 
-//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+var debugMode = true;
 
-PFont f, infoFont;
-PImage paper, lighting;
-String words;
+var isAnimatingKeyStrike = false;
+var isAnimatingCarriageReturn = false;
+var isForward = true;
 
-boolean debugMode = true;
+var viewportY = 0;
+var currentX = 0;
+var currentY = 0;
+var lineStartX = 0;
+var lineStartY = 0;
+var lastX = 0;
+var charwidth = 24;
+var lineHeight = 48;
+var typeSpeed = 3;
+var scrollUpSpeed = 3;
+var returnSpeed = 0.08;
+var easing = 0.08;
 
-boolean isAnimatingKeyStrike;
-boolean isAnimatingCarriageReturn;
-boolean isForward;
+var gray = 96;
+var lineLength = 26;
+var bellLength = lineLength - 5;
+var lineCharCount = 0;
+var lineCount = 1;
+var lineCountLimit = 8;
 
-int viewportY;
-float currentX, currentY;
-float lineStartX, lineStartY;
-float lastX;
-int charwidth = 24;
-int lineHeight = 48;
-float typeSpeed = 3;
-float scrollUpSpeed = 3;
-float returnSpeed = 0.08;
-float easing = 0.08;
-
-int gray = 96;
-int lineLength = 26;
-int bellLength = lineLength - 5;
-int lineCharCount = 0;
-int lineCount = 1;
-int lineCountLimit = 8;
+var words = "";
 
 Maxim maxim;
 AudioPlayer keySound;
@@ -50,9 +50,8 @@ void setup()
   initSound();
 
   infoFont = createFont("Courier", 10, true);
-  f = loadFont("OlivettiType2-48.vlw");
+  f = loadFont("OlivettiType2.ttf");
   paper = loadImage("white-stock.jpg");
-  // lighting = loadImage("spotlight.jpg");
 
   // Init const after viewport size is set.
   viewportY = height/2;
@@ -64,7 +63,6 @@ void setup()
 void draw()
 {
   drawPage();
-  // drawLighting();
   drawDisplay();
 }
 
@@ -94,7 +92,7 @@ void keyPressed() {
     returnSound.cue(0);
     returnSound.play();
 
-    words = words + String.valueOf(key);
+    words = words + String.fromCharCode(key);
     lineCount++;
     lineCharCount = 0;
 
@@ -117,7 +115,6 @@ void keyPressed() {
       // Remove last typed letter.
       words = words.substring(0, words.length() - 1);
       lineCharCount--;
-      println("Word length: " + words.length());
 
       // Animate.
       isAnimatingKeyStrike = true;
@@ -126,7 +123,7 @@ void keyPressed() {
     else
     {
       // If no words type, don't keep going back.
-      println("Word length == 0");
+      prvarln("Word length == 0");
       isAnimatingKeyStrike = false;
     }
 
@@ -144,7 +141,7 @@ void keyPressed() {
   }
   else if ((key >= '!' && key <= '~'))
   {
-    // Print only valid character. See ASCII chart.
+    // Prvar only valid character. See ASCII chart.
     keySound.cue(0);
     keySound.play();
   }
@@ -162,15 +159,13 @@ void keyPressed() {
   }
 
   // Build text.
-  words = words + String.valueOf(key);
+  console.log("Value of key: " + key);
+  words = words + String.fromCharCode(key);
   lineCharCount++;
 
   // Animate.
   isAnimatingKeyStrike = true;
   isForward = true;
-
-  // Console out.
-  // println("key: " + String.valueOf(key) + " value: " + int(key) + " code: " + keyCode);
 }
 
 
@@ -206,7 +201,7 @@ void drawPage() {
     else if ( currentX < lineStartX)
     {
       // Add easing.
-      float dx = lineStartX - currentX;
+      var dx = lineStartX - currentX;
       if (abs(dx) > 1)
       {
         currentX += dx * easing;
@@ -248,18 +243,12 @@ void drawPage() {
   }
 }
 
-//void drawLighting()
-//{
-//  image(lighting, 0, 0);
-//  blend(lighting, 0, 0, 640, 280, 0, 0, 640, 280, OVERLAY);
-//}
-
 void drawDisplay()
 {
   if (debugMode)
   {
-    int fsize = 10;
-    int y = 20;
+    var fsize = 10;
+    var y = 20;
     textFont(infoFont);
     textSize(10);
     text("Debug Info:", 10, y);
