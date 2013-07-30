@@ -6,7 +6,7 @@ PFont infoFont = null;
 PImage paper = null;
 PImage lighting = null;
 
-var debugMode = true;
+var debugMode = false;
 
 var isAnimatingKeyStrike = false;
 var isAnimatingCarriageReturn = false;
