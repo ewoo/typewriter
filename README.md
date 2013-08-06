@@ -13,3 +13,13 @@ For me, this concept is a baseline, a starting point for additional possibilitie
 For look & feel, I opted for a clean gray-scaled look to the piece--and purposely tried to downplay the skeuomorphism. (This seems to be the design idiom many Processing sketches follow.) However, I did need to keep the texture of the paper such that the page animation would be noticeable.
 
 Note that the image above shows the app running in debug mode.
+
+Features to Implement
+---------------------
+- Make delete key move back but not remove characters
+- Type over written text
+- Buffered, asynchronous keystrike (so that you're typing speed is not so limited)
+- Adjust line-height in Javascript implementation
+- Fix page length bug
+- Ribbon animation
+- GUI overlay
